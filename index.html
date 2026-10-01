@@ -21,6 +21,7 @@
     <button class="tab" data-view="files">Advice File Review</button>
     <button class="tab" data-view="risk">Risk Register</button>
     <button class="tab" data-view="exposure">Exposure & Actions</button>
+    <button class="tab" data-view="aiReview">AI File Review</button>
   </nav>
 
   <section id="executive" class="view active-view">
@@ -72,6 +73,90 @@
       <a href="https://www.fca.org.uk/publications/multi-firm-reviews/ongoing-financial-advice-services" target="_blank"><strong>Ongoing advice review</strong><span>Evidence of whether paid-for ongoing services were delivered.</span></a>
       <a href="https://www.fca.org.uk/news/news-stories/review-consolidation-financial-advice-and-wealth-management-sector" target="_blank"><strong>Consolidation review</strong><span>Acquisition, governance, integration and group-risk considerations.</span></a>
     </div></section>
+  </section>
+
+  <section id="aiReview" class="view">
+    <section class="card panel">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">AI-ASSISTED REVIEW PROTOTYPE</p>
+          <h2>AI File Review</h2>
+        </div>
+        <span class="prototype-badge">Secure demo • no live API key</span>
+      </div>
+      <p class="intro-copy">Paste fictional advice-file notes below. The prototype reviews the text for evidence gaps, suitability concerns, Consumer Duty issues, vulnerability considerations and acquisition due-diligence questions. The current GitHub Pages version uses transparent review logic rather than a live external model.</p>
+
+      <div class="ai-input-grid">
+        <label>Advice / recommendation type
+          <select id="aiAdviceType">
+            <option>Investment advice</option>
+            <option>Pension drawdown</option>
+            <option>Defined benefit transfer</option>
+            <option>Platform / product replacement</option>
+            <option>Ongoing advice review</option>
+          </select>
+        </label>
+        <label>Approximate client value
+          <input id="aiClientValue" type="text" placeholder="e.g. £350,000">
+        </label>
+        <label class="full">Fictional file notes
+          <textarea id="aiFileNotes" placeholder="Paste fictional fact-find notes, client circumstances, recommendation rationale, risks, costs, service history and support needs..."></textarea>
+        </label>
+        <label class="full">Adviser conclusion / rationale
+          <textarea id="aiAdviserRationale" placeholder="Paste the fictional adviser's final rationale for why the recommendation was suitable and in the client's interests..."></textarea>
+        </label>
+      </div>
+
+      <div class="demo-actions">
+        <button id="loadAiExample" class="secondary">Load fictional example</button>
+        <button id="runAiReview">Run AI File Review</button>
+      </div>
+
+      <div id="aiEmptyState" class="empty-state">
+        <strong>No AI review run yet</strong>
+        <span>Load the fictional example or enter your own fictional case, then select Run AI File Review.</span>
+      </div>
+
+      <div id="aiResults" class="hidden">
+        <div class="ai-result-head">
+          <div>
+            <p class="eyebrow">PROTOTYPE REVIEW OUTCOME</p>
+            <h3 id="aiRiskOutcome">Further Investigation</h3>
+          </div>
+          <div id="aiFlagCount" class="score-bubble">0 flags</div>
+        </div>
+
+        <div class="two-col">
+          <div>
+            <p class="eyebrow">AI REVIEW SUMMARY</p>
+            <div id="aiReviewSummary" class="text-panel ai"></div>
+          </div>
+          <div>
+            <p class="eyebrow">DRAFT BUYER RISK SUMMARY</p>
+            <div id="aiBuyerSummary" class="text-panel"></div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <p class="eyebrow">CHALLENGE POINTS</p>
+        <div id="aiChallengeFindings" class="findings"></div>
+
+        <div class="divider"></div>
+        <p class="eyebrow">ACQUISITION QUESTIONS</p>
+        <div id="aiAcquisitionQuestions" class="question-list"></div>
+
+        <div class="decision-panel">
+          <p class="eyebrow">HUMAN REVIEW</p>
+          <h3>Reviewer decision</h3>
+          <div class="decision-buttons ai-decisions">
+            <button data-ai-decision="Pass">Pass</button>
+            <button data-ai-decision="Further Investigation">Further Investigation</button>
+            <button data-ai-decision="Material Concern">Material Concern</button>
+          </div>
+          <p id="aiDecisionNote">The prototype does not make a final suitability, regulatory or transaction decision.</p>
+        </div>
+      </div>
+    </section>
   </section>
 
   <footer>Personal portfolio project • fictional data only • not legal, compliance or investment advice</footer>
