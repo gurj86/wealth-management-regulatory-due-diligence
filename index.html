@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Wealth Management Regulatory Due Diligence Toolkit</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="topbar">
+  <div>
+    <p class="eyebrow">FICTIONAL M&A PORTFOLIO DEMO</p>
+    <h1>Wealth Management Regulatory Due Diligence Toolkit</h1>
+    <p class="sub">Buyer-side regulatory due diligence for wealth management, financial planning and pensions.</p>
+  </div>
+  <div class="badge">Human judgement required</div>
+</header>
+<main>
+  <nav class="tabs">
+    <button class="tab active" data-view="executive">Executive Summary</button>
+    <button class="tab" data-view="files">Advice File Review</button>
+    <button class="tab" data-view="risk">Risk Register</button>
+    <button class="tab" data-view="exposure">Exposure & Actions</button>
+  </nav>
+
+  <section id="executive" class="view active-view">
+    <section class="deal-banner card">
+      <div><p class="eyebrow">TARGET FIRM</p><h2>Northbridge Financial Planning Ltd</h2><p>Fictional acquisition target • 3,000 clients • £750m AUA/AUM • 60 sampled files</p></div>
+      <div class="deal-status"><span>Overall DD position</span><strong>Material issues require investigation</strong></div>
+    </section>
+    <section class="metric-grid">
+      <div class="card metric"><span>Files sampled</span><strong>60</strong><small>fictional client files</small></div>
+      <div class="card metric"><span>Material findings</span><strong>18</strong><small>across suitability / service / conduct</small></div>
+      <div class="card metric"><span>Further investigation</span><strong>14</strong><small>insufficient or inconsistent evidence</small></div>
+      <div class="card metric"><span>Illustrative exposure</span><strong>£1.9m</strong><small>scenario only, not a redress estimate</small></div>
+    </section>
+    <section class="two-col">
+      <div class="card panel"><p class="eyebrow">KEY ACQUISITION FINDINGS</p><h2>What the buyer should know</h2><div id="keyFindings"></div></div>
+      <div class="card panel"><p class="eyebrow">THEMATIC REVIEW</p><h2>Sample-file themes</h2><div id="themeBars"></div></div>
+    </section>
+    <section class="card panel"><p class="eyebrow">BUYER CONCLUSION</p><h2>Executive due-diligence view</h2><div class="callout">The sample indicates potential systemic weaknesses in ongoing-service evidence, suitability documentation and replacement/switching rationale. The buyer should expand sampling and quantify affected populations before relying on current liability assumptions. The findings do not establish actual regulatory breaches or remediation liability.</div></section>
+  </section>
+
+  <section id="files" class="view">
+    <section class="layout">
+      <aside class="card panel"><div class="section-head"><div><p class="eyebrow">FILE SAMPLE</p><h2>Advice reviews</h2></div><select id="fileFilter"><option value="all">All</option><option>Pass</option><option>Further Investigation</option><option>Material Concern</option></select></div><div id="fileList"></div></aside>
+      <section class="card panel"><div class="section-head"><div><p class="eyebrow">FILE REVIEW</p><h2 id="fileTitle"></h2></div><span id="fileStatus" class="status"></span></div>
+        <div class="client-grid"><div><span>Client</span><strong id="client"></strong></div><div><span>Advice area</span><strong id="adviceArea"></strong></div><div><span>Value</span><strong id="value"></strong></div><div><span>Vulnerability</span><strong id="vulnerability"></strong></div></div>
+        <div class="review-grid"><article><p class="eyebrow">FILE EVIDENCE</p><div id="evidence" class="text-panel"></div></article><article><p class="eyebrow">DD ASSESSMENT</p><div id="assessment" class="text-panel ai"></div></article></div>
+        <div class="divider"></div><div id="fileFindings" class="findings"></div>
+      </section>
+    </section>
+  </section>
+
+  <section id="risk" class="view">
+    <section class="card panel"><div class="section-head"><div><p class="eyebrow">M&A RISK REGISTER</p><h2>Acquisition issues requiring action</h2></div></div><div class="table-wrap"><table><thead><tr><th>Risk</th><th>Evidence</th><th>Impact</th><th>Rating</th><th>Buyer action</th><th>Timing</th></tr></thead><tbody id="riskRows"></tbody></table></div></section>
+  </section>
+
+  <section id="exposure" class="view">
+    <section class="two-col">
+      <div class="card panel"><p class="eyebrow">ILLUSTRATIVE EXPOSURE</p><h2>Scenario assumptions</h2>
+        <label>Potentially affected clients <input id="affected" type="range" min="50" max="700" value="300" step="25"><span id="affectedVal"></span></label>
+        <label>Average illustrative remediation <input id="avgRedress" type="range" min="500" max="10000" value="5000" step="250"><span id="avgRedressVal"></span></label>
+        <label>Contingency / admin uplift <input id="uplift" type="range" min="0" max="30" value="10" step="1"><span id="upliftVal"></span></label>
+        <div class="exposure-box"><span>Illustrative scenario exposure</span><strong id="exposureTotal"></strong><small>Planning scenario only — not a compensation calculation.</small></div>
+      </div>
+      <div class="card panel"><p class="eyebrow">TRANSACTION ACTIONS</p><h2>Suggested due-diligence response</h2><div id="actions"></div></div>
+    </section>
+    <section class="card panel refs"><p class="eyebrow">PUBLIC FCA REFERENCES</p><h2>Regulatory basis used in the demo</h2><div class="ref-grid">
+      <a href="https://handbook.fca.org.uk/handbook/cobs9" target="_blank"><strong>COBS 9</strong><span>Suitability and suitability-report requirements.</span></a>
+      <a href="https://www.fca.org.uk/firms/consumer-duty" target="_blank"><strong>Consumer Duty</strong><span>Good outcomes and foreseeable-harm considerations.</span></a>
+      <a href="https://www.fca.org.uk/publications/multi-firm-reviews/ongoing-financial-advice-services" target="_blank"><strong>Ongoing advice review</strong><span>Evidence of whether paid-for ongoing services were delivered.</span></a>
+      <a href="https://www.fca.org.uk/news/news-stories/review-consolidation-financial-advice-and-wealth-management-sector" target="_blank"><strong>Consolidation review</strong><span>Acquisition, governance, integration and group-risk considerations.</span></a>
+    </div></section>
+  </section>
+
+  <footer>Personal portfolio project • fictional data only • not legal, compliance or investment advice</footer>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
