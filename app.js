@@ -29,3 +29,114 @@ $('riskRows').innerHTML=risks.map(r=>`<tr><td><strong>${r[0]}</strong></td><td>$
 const actions=[['Expand thematic sampling','Increase review of ongoing-service and replacement-advice populations before completion.'],['Quantify affected populations','Reconcile CRM, fee and service-delivery data to establish potential exposure.'],['Seek contractual protection','Consider warranties, indemnities, retention or price adjustment where uncertainty cannot be resolved pre-completion.'],['Build a 100-day remediation plan','Define owners, governance, customer-priority rules, QA and reporting before integration.']];$('actions').innerHTML=actions.map(a=>`<div class="action"><strong>${a[0]}</strong><span>${a[1]}</span></div>`).join('');
 function calc(){const a=+$('affected').value,r=+$('avgRedress').value,u=+$('uplift').value;$('affectedVal').textContent=a.toLocaleString()+' clients';$('avgRedressVal').textContent='£'+r.toLocaleString();$('upliftVal').textContent=u+'%';$('exposureTotal').textContent='£'+Math.round(a*r*(1+u/100)).toLocaleString()}
 ['affected','avgRedress','uplift'].forEach(id=>$(id).oninput=calc);calc();
+
+function hasAny(text, terms){return terms.some(t=>text.includes(t))}
+function addAiFinding(arr,severity,title,detail){arr.push([severity,title,detail])}
+
+$('loadAiExample').onclick=()=>{
+ $('aiAdviceType').value='Platform / product replacement';
+ $('aiClientValue').value='£420,000';
+ $('aiFileNotes').value="Client is 67 and recently bereaved. Existing platform holds ISA, GIA and pension assets. Adviser recommends moving all assets to the firm's preferred platform. File includes the new platform charges but does not clearly compare exit costs, existing guarantees, tax consequences or disadvantages of switching. Risk profile is recorded as balanced. Capacity for loss is not clearly documented. Client says they find financial paperwork difficult and would prefer their daughter to join future meetings.";
+ $('aiAdviserRationale').value="The new platform is easier to manage and is used by the firm for most clients. The client agreed to the recommendation and the overall charge is competitive, so the switch is suitable.";
+};
+
+$('runAiReview').onclick=()=>{
+ const type=$('aiAdviceType').value;
+ const value=$('aiClientValue').value.trim();
+ const notes=$('aiFileNotes').value.trim();
+ const rationale=$('aiAdviserRationale').value.trim();
+
+ if(!notes && !rationale){
+   $('aiEmptyState').innerHTML='<strong>Add fictional file information first</strong><span>The prototype needs file notes or an adviser rationale to review.</span>';
+   return;
+ }
+
+ const evidence=(notes+' '+rationale).toLowerCase();
+ const rat=rationale.toLowerCase();
+ const flags=[];
+ const questions=[];
+
+ if(type.includes('replacement') || hasAny(evidence,['switch','replace','preferred platform','new platform'])){
+   if(!hasAny(evidence,['existing benefits','disadvantages','exit cost','exit costs','guarantee','tax consequence','comparison','alternatives'])){
+     addAiFinding(flags,'high','Replacement / switching comparison may be incomplete','The file does not clearly evidence a balanced comparison of the existing arrangement against the proposed replacement, including disadvantages, costs and lost benefits.');
+     questions.push('How many replacement or switching cases exist across the target firm, and are similar evidence gaps concentrated by adviser or product?');
+   }
+ }
+
+ if(type.includes('Pension') || hasAny(evidence,['pension','drawdown','retirement','income'])){
+   if(!hasAny(evidence,['cashflow','capacity for loss','sustainable income','longevity','withdrawal rate'])){
+     addAiFinding(flags,'high','Retirement suitability evidence may be incomplete','The file does not clearly demonstrate how sustainable income, downside risk and capacity for loss were assessed.');
+     questions.push('Does the target firm apply a consistent retirement-income and capacity-for-loss methodology across pension advice files?');
+   }
+ }
+
+ if(hasAny(evidence,['bereavement','mental health','illness','dementia','hearing','language','vulnerab','difficulty with paperwork','daughter to join','son to join'])){
+   if(!hasAny(rat,['vulnerab','support','adjustment','communication','bereav','family member','additional help'])){
+     addAiFinding(flags,'high','Support need is not reflected in the adviser rationale','The notes include a potential vulnerability or support need, but the final rationale does not show how it influenced the advice process or ongoing support.');
+     questions.push('How consistently are vulnerability and support needs transferred from fact-find notes into suitability reports and ongoing-service records?');
+   }
+ }
+
+ if(!hasAny(evidence,['capacity for loss','financial position','income','expenditure','assets','liabilities'])){
+   addAiFinding(flags,'medium','Financial resilience evidence appears limited','The entered information does not clearly show how the client’s financial position or ability to absorb loss was assessed.');
+ }
+
+ if(!hasAny(evidence,['objective','objectives','goal','goals','need for','client wants','client requires'])){
+   addAiFinding(flags,'medium','Client objectives are not clearly evidenced','The file text does not clearly link the recommendation to specific client objectives or needs.');
+ }
+
+ if(!hasAny(evidence,['cost','charge','charges','fee','fees'])){
+   addAiFinding(flags,'medium','Cost and value evidence is limited','The file does not clearly show how charges or value were considered as part of the recommendation.');
+ }
+
+ if(hasAny(rat,['client agreed','customer agreed','used by the firm','most clients','standard process','preferred platform']) && !hasAny(rat,['because the client','client circumstances','specific objective','capacity for loss','existing benefits','disadvantages'])){
+   addAiFinding(flags,'medium','Rationale appears process-led rather than client-specific','The conclusion relies on client agreement or firm-standard practice rather than clearly evidencing why the recommendation is suitable for this individual client.');
+ }
+
+ if(rationale.length<100){
+   addAiFinding(flags,'medium','Adviser rationale may be too brief','The final rationale may not provide enough evidence of the judgement, alternatives considered and client-specific reasoning to support due-diligence assurance.');
+ }
+
+ if(flags.length===0){
+   addAiFinding(flags,'pass','No obvious rule-based exception identified','The prototype did not identify an obvious evidence gap in the text entered. A qualified reviewer should still validate the full source file and suitability evidence.');
+ }
+
+ if(questions.length===0){
+   questions.push('Does the target firm show any adviser-level, product-level or branch-level concentration of similar findings?');
+   questions.push('What QA, monitoring and remedial controls exist for this advice type?');
+ }
+
+ const high=flags.filter(f=>f[0]==='high').length;
+ const material=flags.filter(f=>f[0]!=='pass').length;
+ const outcome=high>=2?'Material Concern':material>0?'Further Investigation':'Pass';
+
+ $('aiEmptyState').classList.add('hidden');
+ $('aiResults').classList.remove('hidden');
+ $('aiRiskOutcome').textContent=outcome;
+ $('aiFlagCount').textContent=material+' flag'+(material===1?'':'s');
+
+ $('aiReviewSummary').textContent=
+   outcome==='Pass'
+   ? 'No obvious exception was detected by the prototype rules. A human reviewer should still validate the complete advice file and regulatory context.'
+   : outcome==='Material Concern'
+   ? 'The file contains multiple potentially material evidence gaps. The recommendation may still be suitable, but the current documentation would not be sufficient to rely on without further investigation.'
+   : 'The file contains one or more evidence gaps that should be resolved before the buyer relies on the advice outcome or population-level liability assumptions.';
+
+ const summaryBits=[];
+ if(high>0) summaryBits.push(high+' potentially material issue'+(high===1?'':'s'));
+ if(type) summaryBits.push(type.toLowerCase());
+ if(value) summaryBits.push('client value '+value);
+ $('aiBuyerSummary').textContent=
+   'Sample file review identified '+(summaryBits.join(', ')||'potential due-diligence issues')+
+   '. Buyer should test whether the finding is isolated or systemic, expand targeted sampling where appropriate, and quantify any affected population before completion.';
+
+ $('aiChallengeFindings').innerHTML=flags.map(f=>'<div class="finding '+f[0]+'"><strong>'+f[1]+'</strong><p>'+f[2]+'</p></div>').join('');
+ $('aiAcquisitionQuestions').innerHTML=questions.map(q=>'<div class="question">'+q+'</div>').join('');
+ document.querySelectorAll('.ai-decisions button').forEach(b=>b.classList.remove('selected'));
+};
+
+document.querySelectorAll('.ai-decisions button').forEach(b=>b.onclick=()=>{
+ document.querySelectorAll('.ai-decisions button').forEach(x=>x.classList.remove('selected'));
+ b.classList.add('selected');
+ $('aiDecisionNote').textContent='Human reviewer selected: '+b.dataset.aiDecision+'. In a live control framework the decision, evidence and reviewer rationale would be retained in the audit trail.';
+});
